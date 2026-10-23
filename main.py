@@ -83,16 +83,13 @@ def main():
 
     # -------------------------------------------------------- 3. 채점
     st.header("3. 채점")
-    tol = st.number_input("주관식 허용 오차", min_value=0.0, value=0.0, step=0.01,
-                          help="0이면 정확히 같아야 정답, 0.05면 ±0.05까지 정답")
-
     def is_correct(t, correct, given):
         if given is None or str(given).strip() == "":
             return False
         if t == "객관식":
             return int(given) == int(correct)
         try:
-            return abs(float(str(given).strip()) - float(correct)) <= tol + 1e-9
+            return abs(float(str(given).strip()) - float(correct)) < 1e-9
         except ValueError:
             return False
 
@@ -103,9 +100,7 @@ def main():
             score += ok
             rows.append({
                 "문항": lb,
-                "유형": t,
                 "내 답": "-" if given in (None, "") else (CIRCLED[given] if t == "객관식" else given),
-                "정답": CIRCLED[correct] if t == "객관식" else f"{correct:g}",
                 "결과": "⭕" if ok else "❌",
             })
         total = len(items)
